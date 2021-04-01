@@ -7,10 +7,15 @@ import (
 	"github.com/go-ping/ping"
 )
 
-func main() {
-	nodes := [4]string{"fr1.vtconline.org", "p2proxy.vertcoin.org", "p2p-usa.xyz", "p2p-ekb.xyz"}
-	results := [len(nodes)]time.Duration{}
+var nodes = [4]string{"fr1.vtconline.org", "p2proxy.vertcoin.org", "p2p-usa.xyz", "p2p-ekb.xyz"}
+var results = [len(nodes)]time.Duration{}
 
+func main() {
+	pingNode()
+	fmt.Println(results)
+}
+
+func pingNode() {
 	for i := 0; i < len(nodes); i++ {
 		pinger, err := ping.NewPinger(nodes[i])
 		pinger.SetPrivileged(true) //This line is needed for windows because of ICMP
@@ -22,8 +27,7 @@ func main() {
 		if err != nil {
 			panic(err)
 		}
-
+		fmt.Printf("%s: %v \n", nodes[i], pinger.Statistics().AvgRtt)
 		results[i] = pinger.Statistics().AvgRtt
 	}
-	fmt.Println(results)
 }
