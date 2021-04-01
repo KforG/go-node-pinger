@@ -34,10 +34,12 @@ func pingNode() {
 
 func closestNode() string {
 	var bestNode string
+	lowest := results[0]
 
 	for b := 0; b < len(results); b++ {
-		if results[b] <= results[0] {
+		if results[b] <= lowest {
 			bestNode = nodes[b]
+			lowest = results[b]
 		}
 	}
 	fmt.Printf("Selected node: %s ", bestNode)
