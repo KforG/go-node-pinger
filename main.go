@@ -12,7 +12,7 @@ var results = [len(nodes)]time.Duration{}
 
 func main() {
 	pingNode()
-	fmt.Println(results)
+	closestNode()
 }
 
 func pingNode() {
@@ -30,4 +30,16 @@ func pingNode() {
 		fmt.Printf("%s: %v \n", nodes[i], pinger.Statistics().AvgRtt)
 		results[i] = pinger.Statistics().AvgRtt
 	}
+}
+
+func closestNode() string {
+	var bestNode string
+
+	for b := 0; b < len(results); b++ {
+		if results[b] <= results[0] {
+			bestNode = nodes[b]
+		}
+	}
+	fmt.Printf("Selected node: %s ", bestNode)
+	return bestNode
 }
