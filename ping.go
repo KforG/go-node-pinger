@@ -1,4 +1,4 @@
-package main
+package util
 
 import (
 	"fmt"
@@ -9,10 +9,6 @@ import (
 
 var nodes = [4]string{"fr1.vtconline.org", "p2proxy.vertcoin.org", "p2p-usa.xyz", "p2p-ekb.xyz"}
 var results = [len(nodes)]time.Duration{}
-
-func main() {
-	closestNode()
-}
 
 func pingNode() {
 	for i := 0; i < len(nodes); i++ {
@@ -37,10 +33,10 @@ func pingNode() {
 	}
 }
 
-func closestNode() string {
+func closestNode() (bestNode string) {
 	pingNode()
 
-	bestNode := nodes[0]
+	bestNode = nodes[0]
 	lowest := results[0]
 
 	for i := 1; i < len(results); i++ {
@@ -57,4 +53,19 @@ func closestNode() string {
 
 	fmt.Printf("Selected node: %s\n", bestNode)
 	return bestNode
+}
+
+var selectedNode string = closestNode()
+
+func getClosestNodeStratum() (stratum string) {
+	stratum = "stratum+tcp://"
+	stratum += selectedNode
+	return stratum
+}
+
+func getClosestNodeURL() (URL string) {
+	URL = "http://"
+	URL += selectedNode
+	URL += "/"
+	return URL
 }
