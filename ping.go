@@ -1,13 +1,14 @@
-package util
+package networks
 
 import (
-	"fmt"
 	"time"
 
 	"github.com/go-ping/ping"
+
+	"github.com/vertcoin-project/one-click-miner-vnext/logging"
 )
 
-var nodes = [4]string{"fr1.vtconline.org", "p2proxy.vertcoin.org", "p2p-usa.xyz", "p2p-ekb.xyz"}
+var nodes = [5]string{"fr1.vtconline.org", "p2proxy.vertcoin.org", "p2p-usa.xyz", "p2p-ekb.xyz", "173.198.248.34"}
 var results = [len(nodes)]time.Duration{}
 
 func pingNode() {
@@ -16,20 +17,20 @@ func pingNode() {
 		pinger.SetPrivileged(true)  //This line is needed for windows because of ICMP
 		pinger.Timeout = 5000000000 //If response time is longer than 5 seconds, the pinger will exit regardless of how many packets have been recieved
 		if err != nil {
-			fmt.Println("Error: Check if you are connected to the internet")
-			panic(err)
+			logging.Warn("Error: Check if you are connected to the internet")
+			logging.Warn(err)
 		}
 		pinger.Count = 3
 		err = pinger.Run()
 		if err != nil {
-			fmt.Println("Error: Check if you are connected to the internet")
-			panic(err)
+			logging.Warn("Error: Check if you are connected to the internet")
+			logging.Warn(err)
 		}
 		results[i] = pinger.Statistics().AvgRtt
 		if results[i] == 0 {
 			results[i] = 5000000000
 		}
-		fmt.Printf("%s: %v \n", nodes[i], results[i])
+		logging.Infof("%s: %v \n", nodes[i], results[i])
 	}
 }
 
@@ -51,7 +52,7 @@ func closestNode() (bestNode string) {
 		bestNode += ":9171"
 	}
 
-	fmt.Printf("Selected node: %s\n", bestNode)
+	logging.Infof("Selected node: %s\n", bestNode)
 	return bestNode
 }
 
