@@ -8,10 +8,9 @@ import (
 	"github.com/vertcoin-project/one-click-miner-vnext/logging"
 )
 
-var nodes = [5]string{"fr1.vtconline.org", "p2proxy.vertcoin.org", "p2p-usa.xyz", "p2p-ekb.xyz", "173.198.248.34"}
-var results = [len(nodes)]time.Duration{}
-
 func pingNode() (bestNode string) {
+	nodes := [5]string{"fr1.vtconline.org", "p2proxy.vertcoin.org", "p2p-usa.xyz", "p2p-ekb.xyz", "173.198.248.34"}
+	results := [len(nodes)]time.Duration{}
 	bestNode = nodes[0]
 	lowest := results[0]
 
@@ -30,12 +29,9 @@ func pingNode() (bestNode string) {
 			logging.Warn(err)
 		}
 		results[i] = pinger.Statistics().AvgRtt
-		if results[i] == 0 {
-			results[i] = 5000000000
-		}
 		logging.Infof("%s: %v \n", nodes[i], results[i])
 
-		if results[i] <= lowest {
+		if results[i] <= lowest && results[i] != 0 {
 			bestNode = nodes[i]
 			lowest = results[i]
 		}
