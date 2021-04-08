@@ -11,7 +11,10 @@ import (
 var nodes = [5]string{"fr1.vtconline.org", "p2proxy.vertcoin.org", "p2p-usa.xyz", "p2p-ekb.xyz", "173.198.248.34"}
 var results = [len(nodes)]time.Duration{}
 
-func pingNode() {
+func pingNode() (bestNode string) {
+	bestNode = nodes[0]
+	lowest := results[0]
+
 	for i := 0; i < len(nodes); i++ {
 		pinger, err := ping.NewPinger(nodes[i])
 		pinger.SetPrivileged(true)  //This line is needed for windows because of ICMP
@@ -31,16 +34,7 @@ func pingNode() {
 			results[i] = 5000000000
 		}
 		logging.Infof("%s: %v \n", nodes[i], results[i])
-	}
-}
 
-func closestNode() (bestNode string) {
-	pingNode()
-
-	bestNode = nodes[0]
-	lowest := results[0]
-
-	for i := 1; i < len(results); i++ {
 		if results[i] <= lowest {
 			bestNode = nodes[i]
 			lowest = results[i]
@@ -56,7 +50,7 @@ func closestNode() (bestNode string) {
 	return bestNode
 }
 
-var selectedNode string = closestNode()
+var selectedNode string = pingNode()
 
 func getClosestNodeStratum() (stratum string) {
 	stratum = "stratum+tcp://"
