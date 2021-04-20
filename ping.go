@@ -31,7 +31,7 @@ func pingNode() (bestNode string) {
 		results[i] = pinger.Statistics().AvgRtt
 		logging.Infof("%s: %v \n", nodes[i], results[i])
 
-		if results[i] <= lowest && results[i] != 0 {
+		if results[i] < lowest && results[i] != 0 || lowest == 0 {
 			bestNode = nodes[i]
 			lowest = results[i]
 		}
